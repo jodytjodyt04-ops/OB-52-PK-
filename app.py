@@ -1,3 +1,4 @@
+import random  # Added missing import
 import requests , os , psutil , sys , jwt , pickle , json , binascii , time , urllib3 , base64 , datetime , re , socket , threading , ssl , pytz , aiohttp
 from flask import Flask, request, jsonify
 from protobuf_decoder.protobuf_decoder import Parser
@@ -513,6 +514,29 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
         await asyncio.sleep(reconnect_delay)
 # ---------------------- FLASK ROUTES ----------------------
 
+# Flask routes for Render health checks
+@app.route("/")
+def home():
+    return "Bot is running!"
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"})
+
+def run_web():
+    """Start Flask HTTP server for Render"""
+    port = int(os.environ.get("PORT", 10000))
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False,
+        use_reloader=False
+    )
+
+# Start Flask in background thread BEFORE bot runs
+flask_thread = Thread(target=run_web, daemon=True)
+flask_thread.start()
+
 loop = None
 
 async def perform_emote(team_code: str, uids: list, emote_id: int):
@@ -580,12 +604,6 @@ def join_team():
         "emote_id": emote_id_str,
         "message": "Emote triggered"
     })
-
-
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
-
 
 # ---------------------- MAIN BOT SYSTEM ----------------------
 
@@ -658,9 +676,8 @@ async def MaiiiinE():
     print(f"\n - BoT STarTinG And OnLine on TarGet : {TarGeT} | BOT NAME : {acc_name}")
     print(" - BoT sTaTus > GooD | OnLinE ! (: \n")
 
-    flask_thread = threading.Thread(target=run_flask, daemon=True)
-    flask_thread.start()
-
+    # Flask is already running in background thread
+    # Just run the bot tasks
     await asyncio.gather(task1, task2)
 
 
