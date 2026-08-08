@@ -4,7 +4,6 @@ requests
 psutil
 PyJWT
 protobuf
-google-protobuf
 cfonts
 urllib3
 pytz
