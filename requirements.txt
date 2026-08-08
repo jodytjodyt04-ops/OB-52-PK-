@@ -1,11 +1,11 @@
 flask
-requests
-protobuf
-protobuf-decoder
 aiohttp
-pyjwt
-pytz
+requests
 psutil
+PyJWT
+protobuf
+google-protobuf
 cfonts
-pycryptodome
 urllib3
+pytz
+cryptography
